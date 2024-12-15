@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "commonjs",
+		"rootDirs": [],
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"declarationDir": "./generated",
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
+		"isolatedDeclarations": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipDefaultLibCheck": true,
+		"skipLibCheck": true
+	}
+}
