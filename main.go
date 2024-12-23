@@ -7,8 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rustymotors/lotus/internal/authlogin"
-	"github.com/rustymotors/lotus/internal/shard"
+	"github.com/rustymotors/lotus/internal/connection"
 )
 
 func launchHTTPServer(host string, port int, handler http.HandlerFunc) {
@@ -43,30 +42,18 @@ var (
 	tcpListenPorts = []int{8226, 8227, 8228, 7003, 43300}
 )
 
-func handleTCPConnection(conn net.Conn) {
-	log.Println("TCP connection from", conn.RemoteAddr())
-	body := make([]byte, 1024)
 
-	_, err := conn. Read(body)
-
-	if err != nil {
-		log.Println("Error reading:", err.Error())
-	}
-
-	log.Println("Received:", fmt.Sprintf("%X", body))
-
-}
 
 
 func main() {
 	fmt.Println("Hello, 世界, welcome to Go!")
 
 	// launch HTTP server
-	go launchHTTPServer("0.0.0.0", 3000, myHandler)
+	go launchHTTPServer("0.0.0.0", 3000, connection.HandleHTTPRequest)
 
 	// launch TCP servers
 	for _, port := range tcpListenPorts {
-		go launchTCPServer("0.0.0.0", port, handleTCPConnection)
+		go launchTCPServer("0.0.0.0", port, connection.HandleTCPConnection)
 	}
 	log.Println("Servers started")
 
@@ -77,27 +64,5 @@ func main() {
 }
 
 
-
-func myHandler(w http.ResponseWriter, r *http.Request) {
-	// print the request
-	fmt.Println("Request received: ", r.RemoteAddr, r.Method, r.URL.Path, r.URL.Query())
-
-	// print the request body
-	fmt.Println("Request body: ", r.Body)
-
-	switch r.URL.Path {
-	case "/AuthLogin":
-		// handle AuthLogin
-		authlogin.HandleAuthLogin(r, w)
-
-	case "/ShardList/":
-		// handle ShardList
-		shard.HandleShardList(r, w)
-
-	default:
-		// handle all other requests
-		fmt.Println("Other")
-	}
-}
 
 
