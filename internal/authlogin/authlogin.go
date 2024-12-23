@@ -32,21 +32,6 @@ func (r AuthLoginResponse) String() string {
 	panic("Valid must be true or false")
 }
 
-func HandleAuthLogin(r *http.Request, w http.ResponseWriter) {
-	fmt.Println("AuthLogin")
-	request := AuthLoginRequest{}
-	request.Username = r.URL.Query().Get("username")
-	request.Password = r.URL.Query().Get("password")
-
-	response := processAuthLogin(request)
-
-	responseString := response.String()
-
-	w.Header().Set("Content-Type", "text/plain")
-	fmt.Fprintf(w, "%v", responseString)
-
-}
-
 func processAuthLogin(request AuthLoginRequest) AuthLoginResponse {
 	response := invalidResponse("INV-100", "Oh Dear", "http://www.google.com")
 
@@ -64,6 +49,20 @@ func processAuthLogin(request AuthLoginRequest) AuthLoginResponse {
 	response = validResponse(ticket)
 	return response
 }
+
+func HandleAuthLogin(r *http.Request, w http.ResponseWriter) {
+	fmt.Println("AuthLogin")
+	request := AuthLoginRequest{}
+	request.Username = r.URL.Query().Get("username")
+	request.Password = r.URL.Query().Get("password")
+
+	response := processAuthLogin(request)
+
+	w.Header().Set("Content-Type", "text/plain")
+	fmt.Fprintf(w, "%v", response)
+
+}
+
 
 func validResponse(ticket string) AuthLoginResponse {
 	return AuthLoginResponse{
