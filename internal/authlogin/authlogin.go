@@ -3,6 +3,9 @@ package authlogin
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/rustymotors/lotus/internal/account"
+	"github.com/rustymotors/lotus/internal/session"
 )
 
 
@@ -35,23 +38,45 @@ func HandleAuthLogin(r *http.Request, w http.ResponseWriter) {
 	request.Username = r.URL.Query().Get("username")
 	request.Password = r.URL.Query().Get("password")
 
-	switch request.Username {
-	case "admin":
-		response := AuthLoginResponse{
-			Valid:  true,
-			Ticket: "1234567890",
-		}
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintf(w, "%v", response)
-	default:
-		response := AuthLoginResponse{
-			Valid:      false,
-			Ticket:     "",
-			ReasonCode: "INV-100",
-			ReasonText: "Oh Dear",
-			ReasonUrl:  "http://www.google.com",
-		}
-		w.Header().Set("Content-Type", "text/plain")
-		fmt.Fprintf(w, "%v", response)
+	response := processAuthLogin(request)
+
+	responseString := response.String()
+
+	w.Header().Set("Content-Type", "text/plain")
+	fmt.Fprintf(w, "%v", responseString)
+
+}
+
+func processAuthLogin(request AuthLoginRequest) AuthLoginResponse {
+	response := invalidResponse("INV-100", "Oh Dear", "http://www.google.com")
+
+	accountRepo := account.FetchUserAccountRepository()
+
+	account, err := accountRepo.GetAccount(request.Username, request.Password)
+	if err != nil {
+		return response
+	}
+	ticket, err := session.GenerateTicket(account.CustomerID)
+	if err != nil {
+		return response
+	}
+
+	response = validResponse(ticket)
+	return response
+}
+
+func validResponse(ticket string) AuthLoginResponse {
+	return AuthLoginResponse{
+		Valid:  true,
+		Ticket: ticket,
+	}
+}
+
+func invalidResponse(reasonCode, reasonText, reasonUrl string) AuthLoginResponse {
+	return AuthLoginResponse{
+		Valid:      false,
+		ReasonCode: reasonCode,
+		ReasonText: reasonText,
+		ReasonUrl:  reasonUrl,
 	}
 }
