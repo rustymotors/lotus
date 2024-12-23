@@ -16,6 +16,8 @@ type sessionRepository struct {
 }
 
 func (r *sessionRepository) GetSession(customerId string) *Session {
+	lock.Lock()
+	defer lock.Unlock()
 	for _, session := range r.sessions {
 		if session.CustomerId == customerId {
 			return &session
