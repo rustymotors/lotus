@@ -3,6 +3,7 @@ package session
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"fmt"
 	"sync"
 )
 
@@ -54,8 +55,11 @@ func FetchSessionRepository() *sessionRepository {
 	}
 	return instance
 }
-
 func GenerateTicket(customerId string) (string, error) {
+	if customerId == "" {
+		return "", fmt.Errorf("customerID cannot be empty")
+	}
+
 	u := make([]byte, 16)
 	_, err := rand.Read(u)
 	if err != nil {
@@ -74,3 +78,4 @@ func GenerateTicket(customerId string) (string, error) {
 
 	return ticket, nil
 }
+

@@ -26,6 +26,18 @@ func TestGenerateTicket(t *testing.T) {
 	}
 }
 
+func TestGenerateTicketEmptyCustomerId(t *testing.T) {
+	customerId := ""
+	ticket, err := GenerateTicket(customerId)
+	if err == nil {
+		t.Fatalf("expected an error, got nil")
+	}
+
+	if ticket != "" {
+		t.Errorf("expected an empty ticket, got %s", ticket)
+	}
+}
+
 func TestFetchSessionRepository(t *testing.T) {
 	repo1 := FetchSessionRepository()
 	repo2 := FetchSessionRepository()
