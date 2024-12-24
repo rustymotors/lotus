@@ -24,7 +24,8 @@ func (r *userAccountRepository) GetAccount(username string, password string) (*U
 	defer lock.Unlock()
 	for _, account := range r.accounts {
 		if account.Username == username && account.Password == password {
-			return &account, nil
+			copy := account
+			return &copy, nil
 		}
 	}
 	return nil, errors.New("account not found")
