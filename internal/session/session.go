@@ -48,10 +48,8 @@ var (
 
 func FetchSessionRepository() *sessionRepository {
 	if instance == nil {
-		lock.Lock()
 		instance = &sessionRepository{}
 		instance.init()
-		defer lock.Unlock()
 	}
 	return instance
 }

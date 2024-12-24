@@ -54,10 +54,8 @@ var (
 
 func FetchUserAccountRepository() *userAccountRepository {
 	if instance == nil {
-		lock.Lock()
 		instance = &userAccountRepository{}
 		instance.init()
-		defer lock.Unlock()
 	}
 	return instance
 }
