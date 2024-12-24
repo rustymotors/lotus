@@ -30,7 +30,7 @@ run: ## Run the project
 	@go run main.go
 
 .PHONY: coverage
-coverage: ## Run coverage
+coverage: test ## Run coverage
 	@echo "Running coverage..."
 	@go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 	@go tool cover -html=coverage.txt
