@@ -52,3 +52,38 @@ func TestProcessAuthLogin(t *testing.T) {
 		})
 	}
 }
+func TestAuthLoginResponse_String(t *testing.T) {
+	tests := []struct {
+		name     string
+		response AuthLoginResponse
+		expected string
+	}{
+		{
+			name: "Valid response",
+			response: AuthLoginResponse{
+				Valid:  true,
+				Ticket: "1234567890",
+			},
+			expected: "Valid=TRUE\nTicket=1234567890",
+		},
+		{
+			name: "Invalid response",
+			response: AuthLoginResponse{
+				Valid:      false,
+				ReasonCode: "INV-100",
+				ReasonText: "Oh Dear",
+				ReasonUrl:  "http://www.google.com",
+			},
+			expected: "reasonCode=INV-100\nreasonText=Oh Dear\nreasonUrl=http://www.google.com",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := tt.response.String()
+			if result != tt.expected {
+				t.Errorf("expected %s, got %s", tt.expected, result)
+			}
+		})
+	}
+}
