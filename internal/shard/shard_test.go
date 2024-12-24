@@ -224,7 +224,7 @@ func TestFetchShardRepository(t *testing.T) {
 	repo := FetchShardRepository()
 
 	if repo == nil {
-		t.Errorf("expected non-nil repository, got nil")
+		t.Fatalf("expected non-nil repository, got nil")
 	}
 
 	if len(repo.shards) != 1 {
