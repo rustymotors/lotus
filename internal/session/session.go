@@ -23,7 +23,8 @@ func (r *sessionRepository) GetSession(customerId string) *Session {
 	defer lock.Unlock()
 	for _, session := range r.sessions {
 		if session.CustomerId == customerId {
-			return &session
+			sessionCopy := session
+			return &sessionCopy
 		}
 	}
 	return nil
