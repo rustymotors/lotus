@@ -15,6 +15,9 @@ type sessionRepository struct {
 	sessions []Session
 }
 
+var (
+	lock = sync.Mutex{}
+)
 func (r *sessionRepository) GetSession(customerId string) *Session {
 	lock.Lock()
 	defer lock.Unlock()
@@ -27,15 +30,19 @@ func (r *sessionRepository) GetSession(customerId string) *Session {
 }
 
 func (r *sessionRepository) AddSession(session Session) {
+	lock.Lock()
+	defer lock.Unlock()
 	r.sessions = append(r.sessions, session)
 }
 
 func (r *sessionRepository) init() {
+	lock.Lock()
+	defer lock.Unlock()
 	r.sessions = []Session{}
 }
 
+
 var (
-	lock = sync.Mutex{}
 	instance *sessionRepository
 )
 
